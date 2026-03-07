@@ -224,26 +224,14 @@ type ScannerState = "idle" | "previewing" | "scanning" | "result" | "error";
 const GEMINI_API_KEY =
   import.meta.env.VITE_GEMINI_API_KEY ??
   "AIzaSyDxW4c6FyWgefYKzu7MOpkZTCvq0KhGDNU";
-const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
-async function analyzeImageWithGemini(
+async function callGeminiEndpoint(
+  endpoint: string,
   base64Image: string,
   mimeType: string,
+  prompt: string,
 ): Promise<AiScanResult> {
-  const prompt = `You are a professional nutritionist and food analyst. Carefully analyze this food image to estimate the nutritional content.
-
-Steps:
-1. Identify every food item visible in the image
-2. Estimate the portion size and volume of each item based on visual cues (plate size, utensils, packaging, etc.)
-3. Calculate total calories and macros based on identified items AND their estimated quantities
-
-Respond ONLY with valid JSON in this exact format (no markdown, no code fences, just raw JSON):
-{"mealName": "string (descriptive name listing main components)", "calories": number, "protein": number, "carbs": number, "fat": number, "confidence": "low|medium|high", "notes": "string (mention identified items, portion estimates, and any assumptions)"}
-
-All numbers must be integers. Be realistic with portion sizes. If multiple items, sum all together. If you cannot identify food, set calories to 0 and explain in notes.`;
-
-  const response = await fetch(`${GEMINI_ENDPOINT}?key=${GEMINI_API_KEY}`, {
+  const response = await fetch(`${endpoint}?key=${GEMINI_API_KEY}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -268,7 +256,10 @@ All numbers must be integers. Be realistic with portion sizes. If multiple items
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const errBody = await response.text().catch(() => "");
+    throw new Error(
+      `API error: ${response.status}${errBody ? ` — ${errBody.slice(0, 120)}` : ""}`,
+    );
   }
 
   const data = (await response.json()) as {
@@ -296,6 +287,47 @@ All numbers must be integers. Be realistic with portion sizes. If multiple items
   }
 
   return parsed;
+}
+
+async function analyzeImageWithGemini(
+  base64Image: string,
+  mimeType: string,
+): Promise<AiScanResult> {
+  const prompt = `You are a professional nutritionist and food analyst. Carefully analyze this food image to estimate the nutritional content.
+
+Steps:
+1. Identify every food item visible in the image
+2. Estimate the portion size and volume of each item based on visual cues (plate size, utensils, packaging, etc.)
+3. Calculate total calories and macros based on identified items AND their estimated quantities
+
+Respond ONLY with valid JSON in this exact format (no markdown, no code fences, just raw JSON):
+{"mealName": "string (descriptive name listing main components)", "calories": number, "protein": number, "carbs": number, "fat": number, "confidence": "low|medium|high", "notes": "string (mention identified items, portion estimates, and any assumptions)"}
+
+All numbers must be integers. Be realistic with portion sizes. If multiple items, sum all together. If you cannot identify food, set calories to 0 and explain in notes.`;
+
+  // Try gemini-2.5-flash-lite first, fall back to gemini-2.0-flash if needed
+  const endpoints = [
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+  ];
+
+  let lastError: Error = new Error("Unknown error");
+  for (const endpoint of endpoints) {
+    try {
+      return await callGeminiEndpoint(endpoint, base64Image, mimeType, prompt);
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err));
+      // If it's a 400 (bad request) or 401 (auth), no point retrying different model
+      if (
+        lastError.message.includes("400") ||
+        lastError.message.includes("401") ||
+        lastError.message.includes("403")
+      ) {
+        break;
+      }
+    }
+  }
+  throw lastError;
 }
 
 function AiCalorieScanner({
