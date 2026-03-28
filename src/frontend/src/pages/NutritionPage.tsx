@@ -223,7 +223,7 @@ type ScannerState = "idle" | "previewing" | "scanning" | "result" | "error";
 
 const GEMINI_API_KEY =
   import.meta.env.VITE_GEMINI_API_KEY ??
-  "AIzaSyDxW4c6FyWgefYKzu7MOpkZTCvq0KhGDNU";
+  "AIzaSyC_ioFwO2g4J66UbgSo0dsGpNFv1dWTrFM";
 
 async function callGeminiEndpoint(
   endpoint: string,

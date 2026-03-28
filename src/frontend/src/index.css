@@ -1,0 +1,316 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   FitQuest RPG – Dark RPG Design System
+   OKLCH Color Tokens (raw L C H values)
+   ========================================= */
+
+/* Bricolage Grotesque – Display */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Outfit – Body */
+@font-face {
+  font-family: "Outfit";
+  src: url("/assets/fonts/Outfit-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Mono – Mono */
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/assets/fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* === Light mode (unused – app is always dark) === */
+    --background: 0.12 0.015 270;
+    --foreground: 0.97 0.01 270;
+    --card: 0.16 0.02 270;
+    --card-foreground: 0.97 0.01 270;
+    --popover: 0.14 0.018 270;
+    --popover-foreground: 0.97 0.01 270;
+    --primary: 0.65 0.22 295;
+    --primary-foreground: 0.98 0.005 295;
+    --secondary: 0.22 0.025 270;
+    --secondary-foreground: 0.85 0.01 270;
+    --muted: 0.2 0.018 270;
+    --muted-foreground: 0.55 0.02 270;
+    --accent: 0.72 0.19 295;
+    --accent-foreground: 0.05 0.01 295;
+    --destructive: 0.6 0.22 25;
+    --destructive-foreground: 0.98 0.005 25;
+    --border: 0.28 0.02 270;
+    --input: 0.22 0.02 270;
+    --ring: 0.65 0.22 295;
+
+    /* Chart palette */
+    --chart-1: 0.65 0.22 295;
+    --chart-2: 0.72 0.18 145;
+    --chart-3: 0.8 0.18 85;
+    --chart-4: 0.65 0.22 25;
+    --chart-5: 0.55 0.18 225;
+
+    /* Sidebar */
+    --sidebar: 0.1 0.018 270;
+    --sidebar-foreground: 0.9 0.015 270;
+    --sidebar-primary: 0.65 0.22 295;
+    --sidebar-primary-foreground: 0.98 0.005 295;
+    --sidebar-accent: 0.2 0.025 270;
+    --sidebar-accent-foreground: 0.9 0.015 270;
+    --sidebar-border: 0.25 0.02 270;
+    --sidebar-ring: 0.65 0.22 295;
+
+    /* Custom game tokens */
+    --gold: 0.8 0.18 85;
+    --xp-green: 0.72 0.18 145;
+    --boss-red: 0.65 0.22 25;
+    --legendary: 0.78 0.2 60;
+  }
+
+  .dark {
+    --background: 0.1 0.015 270;
+    --foreground: 0.97 0.01 270;
+    --card: 0.14 0.02 270;
+    --card-foreground: 0.97 0.01 270;
+    --popover: 0.16 0.022 270;
+    --popover-foreground: 0.97 0.01 270;
+    --primary: 0.67 0.22 295;
+    --primary-foreground: 0.98 0.005 295;
+    --secondary: 0.2 0.025 270;
+    --secondary-foreground: 0.85 0.01 270;
+    --muted: 0.18 0.018 270;
+    --muted-foreground: 0.55 0.025 270;
+    --accent: 0.72 0.19 295;
+    --accent-foreground: 0.98 0.005 295;
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 0.98 0.005 25;
+    --border: 0.26 0.022 270;
+    --input: 0.2 0.02 270;
+    --ring: 0.67 0.22 295;
+
+    --chart-1: 0.67 0.22 295;
+    --chart-2: 0.72 0.18 145;
+    --chart-3: 0.8 0.18 85;
+    --chart-4: 0.65 0.22 25;
+    --chart-5: 0.6 0.18 225;
+
+    --sidebar: 0.08 0.016 270;
+    --sidebar-foreground: 0.9 0.015 270;
+    --sidebar-primary: 0.67 0.22 295;
+    --sidebar-primary-foreground: 0.98 0.005 295;
+    --sidebar-accent: 0.18 0.025 270;
+    --sidebar-accent-foreground: 0.9 0.015 270;
+    --sidebar-border: 0.22 0.02 270;
+    --sidebar-ring: 0.67 0.22 295;
+
+    --gold: 0.8 0.18 85;
+    --xp-green: 0.72 0.18 145;
+    --boss-red: 0.65 0.22 25;
+    --legendary: 0.78 0.2 60;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* =====================
+   Custom Component Styles
+   ===================== */
+
+/* Gradient XP bar */
+.xp-bar-fill {
+  background: linear-gradient(90deg, oklch(0.67 0.22 295), oklch(0.72 0.19 315));
+}
+
+/* Strength bar */
+.strength-bar-fill {
+  background: linear-gradient(90deg, oklch(0.65 0.22 25), oklch(0.72 0.2 40));
+}
+
+/* Endurance bar */
+.endurance-bar-fill {
+  background: linear-gradient(90deg, oklch(0.72 0.18 145), oklch(0.76 0.16 160));
+}
+
+/* Agility bar */
+.agility-bar-fill {
+  background: linear-gradient(90deg, oklch(0.6 0.18 225), oklch(0.65 0.2 250));
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, oklch(0.85 0.18 85), oklch(0.72 0.22 60));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Purple gradient text */
+.text-violet-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.72 0.22 295),
+    oklch(0.65 0.24 310)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card glow effects */
+.card-glow-violet {
+  box-shadow: 0 0 0 1px oklch(0.67 0.22 295 / 0.3), 0 4px 24px
+    oklch(0.67 0.22 295 / 0.12), 0 1px 3px oklch(0 0 0 / 0.4);
+}
+
+.card-glow-gold {
+  box-shadow: 0 0 0 1px oklch(0.8 0.18 85 / 0.4), 0 4px 24px
+    oklch(0.8 0.18 85 / 0.15), 0 1px 3px oklch(0 0 0 / 0.4);
+}
+
+.card-glow-legendary {
+  box-shadow: 0 0 0 1px oklch(0.78 0.2 60 / 0.5), 0 8px 32px
+    oklch(0.78 0.2 60 / 0.2), 0 1px 3px oklch(0 0 0 / 0.5);
+}
+
+.card-glow-green {
+  box-shadow: 0 0 0 1px oklch(0.72 0.18 145 / 0.3), 0 4px 24px
+    oklch(0.72 0.18 145 / 0.12), 0 1px 3px oklch(0 0 0 / 0.4);
+}
+
+/* Boss card */
+.boss-card {
+  background: linear-gradient(
+    135deg,
+    oklch(0.14 0.025 10 / 0.95),
+    oklch(0.12 0.018 270 / 0.95)
+  );
+  box-shadow: 0 0 0 1px oklch(0.65 0.22 25 / 0.35), 0 8px 32px
+    oklch(0.65 0.22 25 / 0.15);
+}
+
+/* Mesh background gradient */
+.bg-game-mesh {
+  background: radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      oklch(0.2 0.06 295 / 0.35),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 90% 80%,
+      oklch(0.18 0.05 85 / 0.12),
+      transparent
+    ), oklch(0.1 0.015 270);
+}
+
+/* Sidebar link active state */
+.nav-link-active {
+  background: oklch(0.67 0.22 295 / 0.15);
+  color: oklch(0.75 0.22 295);
+  border-left: 2px solid oklch(0.67 0.22 295);
+}
+
+/* Level badge */
+.level-badge {
+  background: linear-gradient(
+    135deg,
+    oklch(0.67 0.22 295),
+    oklch(0.55 0.26 310)
+  );
+  box-shadow: 0 2px 8px oklch(0.67 0.22 295 / 0.4);
+}
+
+/* Streak fire */
+.streak-badge {
+  background: linear-gradient(135deg, oklch(0.72 0.22 35), oklch(0.65 0.24 50));
+  box-shadow: 0 2px 8px oklch(0.72 0.22 35 / 0.4);
+}
+
+/* Quest complete glow */
+.quest-complete {
+  box-shadow: 0 0 0 1px oklch(0.72 0.18 145 / 0.5), 0 4px 16px
+    oklch(0.72 0.18 145 / 0.15);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: oklch(0.12 0.015 270);
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.28 0.03 270);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.35 0.04 270);
+}
+
+/* Shimmer animation for legendary items */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.legendary-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.78 0.2 60),
+    oklch(0.88 0.16 80),
+    oklch(0.78 0.2 60)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Pulse glow for active elements */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 8px oklch(0.67 0.22 295 / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px oklch(0.67 0.22 295 / 0.7);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
